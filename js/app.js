@@ -1,104 +1,101 @@
-console.log("Welcome to notes app. This is app.js");
-
 showNotes();
-// If user adds a note, add it to the localStorage
-let addBtn = document.getElementById("addBtn");
-addBtn.addEventListener("click", function (e) {
+
+//When user creates a note and tap to the add button add it to the local storage
+let addBtn = document.querySelector("#addBtn");
+// console.log(addBtn);
+
+addBtn.addEventListener("click", (e) => {
+    let addTitle = document.getElementById("addTitle");
     let addTxt = document.getElementById("addTxt");
-    let addtitle = document.getElementById('addtitle')
     let notes = localStorage.getItem("notesObj");
+
     if (notes == null) {
         notesObj = [];
-    } else {
+    }
+    else {
         notesObj = JSON.parse(notes);
     }
-    let myobj = {
-        title:addtitle.value ,
+
+    let myObj = {
+        title: addTitle.value,
         text: addTxt.value
     }
-    notesObj.push(myobj);
+
+    notesObj.push(myObj);
     localStorage.setItem("notesObj", JSON.stringify(notesObj));
-    addTxt.value = "";
-    addtitle.value = "";
+
+    addTitle.value = " ";
+    addTxt.value = " ";
+
     console.log(notesObj);
 
     showNotes();
-});
+})
 
-//functions to show elemts from local storage
+// function to show notes from the localStorage
 function showNotes() {
     let notes = localStorage.getItem("notesObj");
+
     if (notes == null) {
         notesObj = [];
-    } else {
+    }
+    else {
         notesObj = JSON.parse(notes);
     }
 
-    let html = "";
+    let html = " ";
 
-    notesObj.forEach(function (element, index) {
-        html += `
-            <div class="noteCard my-2 mx-2 card" style="width: 18rem;">
-            <div class="card-body">
-                <h5 class="card-title"> ${element.title}</h5>
-                <p class="card-text">${element.text}</p>
-                <button id = "${index}" onclick = "deleteNote(this.id)" class="btn btn-primary">Delete note</button>
-            </div>
-        </div> 
-                    `;
+    notesObj.forEach((element, index) => {
+        html += `<div class="noteCard my-2 mx-2 card" style="width: 18rem;">
+        <div class="card-body note-body">
+          <h5 class="card-title">${element.title}</h5>
+          <p class="card-text">${element.text}</p>
+          <button id = "${index}" onclick = "deleteNote(this.id)" class="btn btn-primary">Delete note</button>
+        </div>
+      </div>`
     });
 
-    let notesElm = document.getElementById('notes');
+    let notesElement = document.getElementById("notes");
 
     if (notesObj.length != 0) {
-        notesElm.innerHTML = html;
+        notesElement.innerHTML = html;
+    }
+    else {
+        notesElement.innerHTML = `Nothing To Show!`;
     }
 
-    else {
-        notesElm.innerHTML = `Nothing to Show!`;
-    }
 }
 
-//function to delete a note
+//Function to Delete a note
 function deleteNote(index) {
-    console.log('i am deleted', index);
+    console.log("I am deleted ", index);
 
     let notes = localStorage.getItem("notesObj");
     if (notes == null) {
         notesObj = [];
-    } else {
+    }
+    else {
         notesObj = JSON.parse(notes);
     }
 
     notesObj.splice(index, 1);
     localStorage.setItem("notesObj", JSON.stringify(notesObj));
-
     showNotes();
 }
 
-//function for filtering note texts
-let search = document.getElementById('searchTxt');
-search.addEventListener("input", function () {
+//Function for filtering the text
+let search = document.querySelector("#searchNote");
 
-    let inputVal = search.value;
-    // console.log('Input event fired!', inputVal);
-    let noteCards = document.getElementsByClassName('noteCard');
-    Array.from(noteCards).forEach(function (element) {
-        let cardTxt = element.getElementsByTagName("p")[0].innerText;
-        if (cardTxt.includes(inputVal)) {
+search.addEventListener("input", () => {
+    let inputValue = search.value;
+    let noteCards = document.querySelectorAll(".noteCard");
+    Array.from(noteCards).forEach((element) => {
+        let titleText = element.getElementsByTagName("h5")[0].innerText;
+        if (titleText.includes(inputValue)) {
             element.style.display = "block";
         }
         else {
             element.style.display = "none";
         }
-        // console.log(cardTxt);
     })
 })
-
-/*
-Further Features:
-1. Add Title
-2. Mark a note as Important
-3. Separate notes by user
-4. Sync and host to web server 
-*/    
